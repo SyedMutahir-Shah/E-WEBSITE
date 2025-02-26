@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-gray-800">ShopZone</a>
+            <div class="relative w-1/3 flex items-center space-x-2">
+                <input type="text" id="search" placeholder="Search products..." class="w-full px-4 py-2 border rounded focus:ring focus:ring-blue-300">
+                <button id="searchBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">🔍</button>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="text-gray-700 hover:text-blue-500">Home</a>
+                <a href="#" class="text-gray-700 hover:text-blue-500">Categories</a>
+                <a href="#" class="text-gray-700 hover:text-blue-500">Cart 🛒</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Product Section -->
+    <div class="max-w-7xl mx-auto mt-6">
+        <h1 class="text-3xl font-bold text-center text-gray-800">Our Products</h1>
+        <div id="main" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6"></div>
+    </div>
+
+    <script>
+        let Getdiv = document.getElementById("main");
+        let searchInput = document.getElementById("search");
+        let searchBtn = document.getElementById("searchBtn");
+        let allProducts = [];
+
+        // Fetch products from API
+        fetch("https://fakestoreapi.com/products")
+            .then(data => data.json())
+            .then(data => {
+                allProducts = data;
+                displayProducts(allProducts);
+            });
+
+        // Function to display products
+        function displayProducts(products) {
+            Getdiv.innerHTML = "";
+            products.forEach((val) => {
+                Getdiv.innerHTML += `
+                    <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4">
+                        <img src="${val.image}" alt="${val.title}" class="w-full h-48 object-contain">
+                        <div class="p-4">
+                            <h2 class="text-lg font-semibold text-gray-800">${val.title}</h2>
+                            <p class="text-gray-500 mt-2">${val.category}</p>
+                            <p class="text-xl font-bold text-blue-500 mt-2">$${val.price}</p>
+                            <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Search when button is clicked
+        searchBtn.addEventListener("click", () => {
+            let filteredProducts = allProducts.filter(product => 
+                product.title.toLowerCase().includes(searchInput.value.toLowerCase())
+            );
+            displayProducts(filteredProducts);
+        });
+    </script>
+
+</body>
+</html>
